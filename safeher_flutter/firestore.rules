@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Every user can only read/write their own profile, contacts,
+    // vitals stream, and alert history. Nothing here is public.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /contacts/{contactId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /vitals/{doc} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+
+      match /alerts/{alertId} {
+        // Users create/read their own alerts; updates (status changes)
+        // are also restricted to the owner. The Cloud Function uses the
+        // Admin SDK, which bypasses these rules entirely.
+        allow read, create, update: if request.auth != null && request.auth.uid == userId;
+        allow delete: if false;
+      }
+    }
+  }
+}

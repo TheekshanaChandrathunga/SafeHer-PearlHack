@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "697045561314",
+    "project_id": "pearlhack-94473",
+    "storage_bucket": "pearlhack-94473.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697045561314:android:00abb21b8ed88b4439d3bb",
+        "android_client_info": {
+          "package_name": "com.example.safeher"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApMvAMKqrjXNXB4eJXFAn0KfsoSeMovzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
