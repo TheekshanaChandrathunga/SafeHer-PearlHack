@@ -11,6 +11,8 @@ import '../widgets/sos_button.dart';
 import '../widgets/vitals_card.dart';
 import 'alert_countdown_screen.dart';
 import 'alert_sent_screen.dart';
+import 'fake_call_screen.dart';
+import 'voice_sos_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -157,21 +159,70 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 Expanded(
-                    child:
-                        _actionTile(Icons.phone_in_talk, 'Fake call', () {})),
+                    child: _actionTile(
+                        Icons.phone_in_talk,
+                        'Fake call',
+                        () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const FakeCallScreen()),
+                            ))),
                 const SizedBox(width: 10),
                 Expanded(
                     child: _actionTile(
-                        Icons.location_on, 'Share Location', () {})),
+                        Icons.location_on, 'Share Location', _shareLocation)),
               ],
             ),
             const SizedBox(height: 10),
-            _actionTile(Icons.mic, 'Voice SOS',
-                () => _openCountdown(AlertSource.voice)),
+            SizedBox(
+              width: double.infinity,
+              child: _actionTile(
+                  Icons.mic,
+                  'Voice SOS',
+                  () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const VoiceSosScreen()),
+                      )),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _shareLocation() async {
+    final position = await LocationService().getCurrentPosition();
+    if (!mounted) return;
+    if (position == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Location permission or GPS is unavailable.')),
+      );
+      return;
+    }
+
+    final contacts = await _fb.watchContacts().first;
+    if (contacts.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Add an emergency contact first.')),
+      );
+      return;
+    }
+
+    await AlertService(_fb, LocationService()).triggerAlert(
+      source: AlertSource.location,
+      contacts: contacts,
+      autoCall: false,
+      notifyAuthorities: false,
+      latitude: position.latitude,
+      longitude: position.longitude,
+    );
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Location sent to ${contacts.first.name}.')),
+      );
+    }
   }
 
   Widget _actionTile(IconData icon, String label, VoidCallback onTap) {

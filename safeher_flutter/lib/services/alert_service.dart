@@ -19,16 +19,20 @@ class AlertService {
     required List<EmergencyContact> contacts,
     required bool autoCall,
     required bool notifyAuthorities,
+    double? latitude,
+    double? longitude,
     String emergencyNumber = '119',
   }) async {
-    final pos = await _loc.getCurrentPosition();
+    final pos = latitude == null || longitude == null
+        ? await _loc.getCurrentPosition()
+        : null;
 
     final alert = SafetyAlert(
       id: '',
       source: source,
       status: AlertStatus.pending,
-      lat: pos?.latitude,
-      lng: pos?.longitude,
+      lat: latitude ?? pos?.latitude,
+      lng: longitude ?? pos?.longitude,
       createdAt: DateTime.now(),
     );
     final alertId = await _fb.createAlert(alert);

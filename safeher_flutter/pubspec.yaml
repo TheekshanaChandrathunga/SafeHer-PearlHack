@@ -1,10 +1,10 @@
 name: safeher
 description: "SafeHer — AI & IoT based Smart Women Safety System"
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -27,6 +27,8 @@ dependencies:
   provider: ^6.1.2
   intl: ^0.19.0
   url_launcher: ^6.2.5
+  record: ^5.1.2
+  share_plus: ^9.0.0
   flutter_local_notifications: ^17.0.0
   shared_preferences: ^2.2.2
 
@@ -34,6 +36,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+
+dependency_overrides:
+  record_web:
+    path: third_party/record_web
 
 flutter:
   uses-material-design: true

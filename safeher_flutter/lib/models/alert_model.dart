@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-enum AlertSource { manual, aiHeartRate, aiMotion, aiFall, voice }
+enum AlertSource { manual, location, aiHeartRate, aiMotion, aiFall, voice }
 
 enum AlertStatus { pending, cancelled, sent, resolved }
 

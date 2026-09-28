@@ -54,8 +54,10 @@ exports.onAlertCreated = functions.firestore
         ? `https://maps.google.com/?q=${alert.lat},${alert.lng}`
         : 'location unavailable';
 
-    const body = `${user.name || 'A SafeHer user'} may need help. ` +
-      `Alert source: ${alert.source}. Live location: ${mapsLink}`;
+    const body = alert.source === 'location'
+      ? `${user.name || 'A SafeHer user'} shared their current location: ${mapsLink}`
+      : `${user.name || 'A SafeHer user'} may need help. ` +
+        `Alert source: ${alert.source}. Live location: ${mapsLink}`;
 
     const notifiedIds = [];
 
