@@ -1,0 +1,1 @@
+{"firestore":{"rules":"firestore.rules","indexes":"firestore.indexes.json"},"functions":[{"source":"functions","codebase":"default","ignore":["node_modules",".git","firebase-debug.log"]}],"flutter":{"platforms":{"dart":{"lib/firebase_options.dart":{"projectId":"pearlhack-94473","configurations":{"web":"1:697045561314:web:2eb6de3cfdc5fad339d3bb"}}}}}}

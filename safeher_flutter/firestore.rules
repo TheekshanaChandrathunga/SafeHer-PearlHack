@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Demo fallback: allow the seeded demo account to work even before
+    // anonymous auth is enabled in the Firebase project.
+    function isDemoUser(userId) {
+      return userId == 'demo-user-001';
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth == null
+        ? isDemoUser(userId)
+        : request.auth.uid == userId;
+
+      match /contacts/{contactId} {
+        allow read, write: if request.auth == null
+          ? isDemoUser(userId)
+          : request.auth.uid == userId;
+      }
+
+      match /vitals/{doc} {
+        allow read, write: if request.auth == null
+          ? isDemoUser(userId)
+          : request.auth.uid == userId;
+      }
+
+      match /alerts/{alertId} {
+        allow read, create, update: if request.auth == null
+          ? isDemoUser(userId)
+          : request.auth.uid == userId;
+        allow delete: if false;
+      }
+    }
+
+    // Simulated Wokwi ESP32 "wearable" (see safeher_wokwi/sketch.ino).
+    match /sensor_readings/{deviceId} {
+      allow read: if true;
+      allow write: if request.resource.data.keys().hasAll(
+          ['device_id', 'heart_rate', 'movement', 'risk_detected', 'timestamp']) &&
+        request.resource.data.device_id is string &&
+        request.resource.data.heart_rate is number &&
+        request.resource.data.movement in ['normal', 'unusual', 'inactive'] &&
+        request.resource.data.risk_detected is bool;
+    }
+  }
+}

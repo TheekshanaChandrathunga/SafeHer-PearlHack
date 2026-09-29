@@ -1,0 +1,11 @@
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+functions/node_modules/
+firebase-debug.log

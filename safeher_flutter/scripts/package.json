@@ -1,0 +1,12 @@
+{
+  "name": "safeher-firestore-seed",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "seed": "node seed_firestore.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.0"
+  }
+}
