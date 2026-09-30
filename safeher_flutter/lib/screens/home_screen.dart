@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _espReading = r);
     if (r == null) return;
 
-    final highHeartRate = r.heartRate >= _espHighHeartRateThreshold;
+    final highHeartRate = r.heartRate > _espHighHeartRateThreshold;
     final riskDetected = r.riskDetected || highHeartRate;
     _espConsecutiveRisk = riskDetected ? _espConsecutiveRisk + 1 : 0;
 
@@ -223,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
               battery: _battery,
               connected: _espReading == null ? true : _espConnected,
               heartRateAlert: _espConnected &&
-                  _espReading!.heartRate >= _espHighHeartRateThreshold,
+                  _espReading!.heartRate > _espHighHeartRateThreshold,
               movementLabel: _espReading == null
                   ? null
                   : _capitalize(_espReading!.movement),

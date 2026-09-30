@@ -51,8 +51,9 @@
 #define WIFI_PASSWORD     ""
 
 // --- Illustrative test thresholds (easy to change) ---
-const int HR_HIGH_THRESHOLD = 120;   // bpm, test value only
-const int HR_LOW_THRESHOLD  = 45;    // bpm, test value only
+#define HR_MIN_NORMAL 50
+#define HR_MAX_NORMAL 120
+#define FALL_THRESHOLD 2.5f
 
 // --- Timing ---
 const unsigned long SEND_INTERVAL_MS   = 3000;
@@ -250,12 +251,12 @@ Reading generateReading() {
   } else {
     sensors_event_t accel, gyro, temp;
     mpu.getEvent(&accel, &gyro, &temp);
-    const float magnitude = sqrt(
+    const float totalAccel = sqrt(
         accel.acceleration.x * accel.acceleration.x +
         accel.acceleration.y * accel.acceleration.y +
-        accel.acceleration.z * accel.acceleration.z);
-    r.heartRate = map(analogRead(POT_PIN), 0, 4095, 45, 160);
-    r.movement = magnitude > 14.0 ? "unusual" : "normal";
+      accel.acceleration.z * accel.acceleration.z) / 9.81f;
+    r.heartRate = map(analogRead(POT_PIN), 0, 4095, 40, 180);
+    r.movement = totalAccel > FALL_THRESHOLD ? "unusual" : "normal";
   }
 
   if (strcmp(r.movement, "inactive") == 0) inactiveSeconds += SEND_INTERVAL_MS / 1000;
@@ -264,8 +265,8 @@ Reading generateReading() {
   // Illustrative test rules (not medically validated)
   r.risk = false;
   r.reason = "none";
-  if (r.heartRate >= HR_HIGH_THRESHOLD)          { r.risk = true; r.reason = "high_heart_rate"; }
-  else if (r.heartRate <= HR_LOW_THRESHOLD)      { r.risk = true; r.reason = "low_heart_rate"; }
+  if (r.heartRate > HR_MAX_NORMAL)               { r.risk = true; r.reason = "high_heart_rate"; }
+  else if (r.heartRate < HR_MIN_NORMAL)          { r.risk = true; r.reason = "low_heart_rate"; }
   else if (strcmp(r.movement, "unusual") == 0)   { r.risk = true; r.reason = "unusual_movement"; }
   else if (inactiveSeconds >= 15)                { r.risk = true; r.reason = "prolonged_inactivity"; }
   return r;
