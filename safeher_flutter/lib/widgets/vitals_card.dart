@@ -6,6 +6,7 @@ class VitalsRow extends StatelessWidget {
     required this.heartRate,
     required this.battery,
     required this.connected,
+    this.heartRateAlert = false,
     this.movementLabel,
     this.simulated = false,
   });
@@ -13,6 +14,7 @@ class VitalsRow extends StatelessWidget {
   final double heartRate;
   final double battery;
   final bool connected;
+  final bool heartRateAlert;
 
   /// Optional: current movement state from the simulated ESP32
   /// wearable ('Normal' / 'Unusual' / 'Inactive'). When null, the
@@ -28,7 +30,12 @@ class VitalsRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _tile(context, '❤️ ${heartRate.toStringAsFixed(0)}', 'Normal'),
+        _tile(
+          context,
+          '❤️ ${heartRate.toStringAsFixed(0)}',
+          heartRateAlert ? 'High heart rate' : 'Normal',
+          color: heartRateAlert ? Colors.red : null,
+        ),
         const SizedBox(width: 10),
         movementLabel == null
             ? _tile(context, '🔋 ${battery.toStringAsFixed(0)}%', 'Wearable')

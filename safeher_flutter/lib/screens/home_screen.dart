@@ -38,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   static const _espStaleAfter = Duration(seconds: 10);
   static const _espRiskPersistReadings = 2; // avoid firing on one noisy tick
   static const _espCooldown = Duration(seconds: 30);
+  static const _espHighHeartRateThreshold = 120.0;
 
   bool get _espConnected =>
       _espReading != null && !_espReading!.isStale(_espStaleAfter);
@@ -74,7 +75,9 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _espReading = r);
     if (r == null) return;
 
-    _espConsecutiveRisk = r.riskDetected ? _espConsecutiveRisk + 1 : 0;
+    final highHeartRate = r.heartRate >= _espHighHeartRateThreshold;
+    final riskDetected = r.riskDetected || highHeartRate;
+    _espConsecutiveRisk = riskDetected ? _espConsecutiveRisk + 1 : 0;
 
     final inCooldown = _espCooldownUntil != null &&
         DateTime.now().isBefore(_espCooldownUntil!);
@@ -219,6 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
               heartRate: _displayHr,
               battery: _battery,
               connected: _espReading == null ? true : _espConnected,
+              heartRateAlert: _espConnected &&
+                  _espReading!.heartRate >= _espHighHeartRateThreshold,
               movementLabel: _espReading == null
                   ? null
                   : _capitalize(_espReading!.movement),
