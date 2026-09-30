@@ -34,6 +34,8 @@
 #define POT_PIN 34
 #define MPU_SDA 21
 #define MPU_SCL 22
+#define LED_PIN 13
+#define BUZZER_PIN 14
 
 // --- Firebase placeholders (fill from Firebase console) ---
 #define FIREBASE_API_KEY  "AIzaSyApMvAMKqrjXNXB4eJXFAn0KfsoSeMovzQ"
@@ -66,6 +68,19 @@ unsigned long lastSendMs = 0;
 unsigned long inactiveSeconds = 0;
 bool timeSynced = false;
 Adafruit_MPU6050 mpu;
+
+void triggerLocalAlarm(const char* cause, int heartRate) {
+  Serial.printf("[EMERGENCY ALERT] Triggered by: %s (%d BPM)\n", cause,
+                heartRate);
+  for (int i = 0; i < 5; i++) {
+    digitalWrite(LED_PIN, HIGH);
+    tone(BUZZER_PIN, 1000);
+    delay(150);
+    digitalWrite(LED_PIN, LOW);
+    noTone(BUZZER_PIN);
+    delay(150);
+  }
+}
 
 // ---------------------------------------------------------------
 // Wi-Fi
@@ -305,6 +320,12 @@ void setup() {
   Serial.printf("Scenario: %d | Device: %s\n", SCENARIO, DEVICE_ID);
   randomSeed(esp_random());
 
+  pinMode(POT_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(LED_PIN, LOW);
+  noTone(BUZZER_PIN);
+
   Wire.begin(MPU_SDA, MPU_SCL);
   if (!mpu.begin()) {
     Serial.println("[Sensor] MPU6050 not found; movement readings unavailable.");
@@ -324,6 +345,13 @@ void loop() {
   Serial.printf("[SIM] HR=%d bpm | movement=%s | inactive=%lus | risk=%s (%s)\n",
                 r.heartRate, r.movement, inactiveSeconds,
                 r.risk ? "YES" : "no", r.reason);
+
+  if (r.risk) {
+    triggerLocalAlarm(r.reason, r.heartRate);
+  } else {
+    digitalWrite(LED_PIN, LOW);
+    noTone(BUZZER_PIN);
+  }
 
   if (!ensureWifi()) return;
   if (!timeSynced) syncTime();
