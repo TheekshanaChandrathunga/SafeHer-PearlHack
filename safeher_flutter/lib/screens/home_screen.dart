@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../models/alert_model.dart';
-import '../models/contact_model.dart';
 import '../models/sensor_reading_model.dart';
 import '../models/vitals_model.dart';
 import '../services/ai_detection_service.dart';
@@ -54,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _ai = AIDetectionService(onDistress: _onAIDistress);
     _ai.start();
     _ai.stream.listen((VitalsReading r) {
+      if (!mounted) return;
       setState(() => _hr = r.heartRate);
       _fb.pushVitals(
         heartRate: r.heartRate,
@@ -70,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   /// raised, so a single noisy tick or a resolved alert doesn't spam
   /// the "Are you okay?" prompt.
   void _onEspReading(EspSensorReading? r) {
+    if (!mounted) return;
     setState(() => _espReading = r);
     if (r == null) return;
 
@@ -123,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     // Same 10s no-response fallback as the on-device AI prompt.
     Future.delayed(const Duration(seconds: 10), () {
-      if (_dialogShowing) {
+      if (mounted && _dialogShowing) {
         Navigator.of(context, rootNavigator: true).pop();
         _dialogShowing = false;
         _openCountdown(source);
@@ -167,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // and escalate automatically — matches the proposal's requirement
     // that fear/shock shouldn't block a response.
     Future.delayed(const Duration(seconds: 10), () {
-      if (_dialogShowing) {
+      if (mounted && _dialogShowing) {
         Navigator.of(context, rootNavigator: true).pop();
         _dialogShowing = false;
         _openCountdown(AlertSource.aiHeartRate);
@@ -312,6 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     final contacts = await _fb.watchContacts().first;
+    if (!mounted) return;
     if (contacts.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Add an emergency contact first.')),

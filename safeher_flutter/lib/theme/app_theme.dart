@@ -46,7 +46,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: AppColors.pink2.withOpacity(.6)),
+          side: BorderSide(color: AppColors.pink2.withValues(alpha: .6)),
         ),
       ),
     );

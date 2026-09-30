@@ -62,7 +62,8 @@ class _SosButtonState extends State<SosButton>
               boxShadow: _holding
                   ? [
                       BoxShadow(
-                        color: AppColors.red.withOpacity(.5 * (1 - _controller.value)),
+                        color: AppColors.red.withValues(
+                          alpha: .5 * (1 - _controller.value)),
                         blurRadius: 30,
                         spreadRadius: 20 * _controller.value,
                       )

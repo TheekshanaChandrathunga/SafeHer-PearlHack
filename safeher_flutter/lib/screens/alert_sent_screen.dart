@@ -32,7 +32,7 @@ class AlertSentScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
               const Text('Help is on the way. Stay calm.', style: TextStyle(color: AppColors.muted)),
               const SizedBox(height: 16),
-              ...contacts.map((c) => Card(
+                ...contacts.map((c) => Card(
                     child: ListTile(
                       leading: CircleAvatar(child: Text(c.name.isNotEmpty ? c.name[0] : '?')),
                       title: Text(c.name),
@@ -40,9 +40,9 @@ class AlertSentScreen extends StatelessWidget {
                       trailing: const Text('Notified ✓', style: TextStyle(color: AppColors.green)),
                     ),
                   )),
-              Card(
+              const Card(
                 color: AppColors.pink2,
-                child: const ListTile(
+                child: ListTile(
                   leading: Icon(Icons.shield, color: AppColors.purple2),
                   title: Text('Authorities Notified.'),
                   subtitle: Text('Emergency services alerted.'),
