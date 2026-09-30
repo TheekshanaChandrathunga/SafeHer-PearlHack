@@ -21,6 +21,7 @@ dependencies:
   # Sensors / location (real device data sources for the AI service)
   sensors_plus: ^4.0.2
   geolocator: ^11.0.0
+  google_maps_flutter: ^2.12.3
   permission_handler: ^11.3.0
 
   # State / utils

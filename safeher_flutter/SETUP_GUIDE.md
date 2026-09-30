@@ -129,7 +129,8 @@ These parts are intentionally simulated or incomplete:
 - Voice SOS currently opens the SOS flow but does not perform speech
   recognition.
 - Fake Call and Share Location actions are placeholders.
-- The location screen displays coordinates but does not embed a map.
+- The location screen uses Google Maps; configure the web API key in
+  `web/index.html` before testing map tiles.
 - Real push notifications require Firebase Cloud Messaging setup.
 - Real SMS requires Twilio configuration and deployed Functions.
 

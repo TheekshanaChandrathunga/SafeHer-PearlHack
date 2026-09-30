@@ -59,6 +59,14 @@ flutter pub get
 flutter run
 ```
 
+### Google Maps
+
+The Live Tracking screen uses Google Maps. Create a restricted Google Maps
+JavaScript API key with the **Maps JavaScript API** enabled, then replace
+`YOUR_GOOGLE_MAPS_API_KEY` in `web/index.html`. Restrict the key by HTTP
+referrer for the domains where the web app is hosted. The browser must allow
+location access for the current-position marker to appear.
+
 Add platform config files after `flutterfire configure`:
 - `android/app/google-services.json`
 - `ios/Runner/GoogleService-Info.plist`
